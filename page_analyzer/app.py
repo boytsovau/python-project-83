@@ -48,14 +48,21 @@ def handle_urls():
         flash('URL успешно добавлен', 'success')
         return redirect(url_for('handle_urls'))
 
+
 @app.route('/urls/<int:url_id>')
 def show_url(url_id):
     conn = connect_db()
     cur = conn.cursor()
     cur.execute("SELECT * FROM urls WHERE id = %s", (url_id,))
     url = cur.fetchone()
+
+    cur.execute("SELECT * FROM checks WHERE url_id = %s ORDER BY id DESC", (url_id,))
+    checks = cur.fetchall()
+
     conn.close()
-    return render_template('url.html', url=url)
+
+    return render_template('url.html', url=url, checks=checks)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
