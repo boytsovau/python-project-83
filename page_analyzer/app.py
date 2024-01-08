@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import psycopg2
 import os
 from dotenv import load_dotenv
+from validators import url as validate_url
+
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -23,6 +25,10 @@ def add_url():
 
     if len(url) > 255:
         flash('URL не должен превышать 255 символов', 'error')
+        return redirect(url_for('index'))
+
+    if not validate_url(url):
+        flash('Введенный URL недействителен', 'error')
         return redirect(url_for('index'))
 
     conn = psycopg2.connect(DATABASE_URL)
