@@ -4,22 +4,17 @@ import os
 from dotenv import load_dotenv
 from validators import url as validate_url
 
-
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
 load_dotenv()
-
-
 DATABASE_URL = os.getenv('DATABASE_URL')
-
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
-@app.route('/add_url', methods=['POST'])
+@app.route('/urls', methods=['POST'])
 def add_url():
     url = request.form['url']
 
@@ -40,7 +35,6 @@ def add_url():
     flash('URL успешно добавлен', 'success')
     return redirect(url_for('index'))
 
-
 @app.route('/urls')
 def show_urls():
     conn = psycopg2.connect(DATABASE_URL)
@@ -50,7 +44,6 @@ def show_urls():
     conn.close()
     return render_template('urls.html', urls=urls)
 
-
 @app.route('/urls/<int:url_id>')
 def show_url(url_id):
     conn = psycopg2.connect(DATABASE_URL)
@@ -59,3 +52,6 @@ def show_url(url_id):
     url = cur.fetchone()
     conn.close()
     return render_template('url.html', url=url)
+
+if __name__ == '__main__':
+    app.run(debug=True)
