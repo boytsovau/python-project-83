@@ -10,5 +10,10 @@
         <h1>Привет, hexlet!</h1>
         <p>Это мой первый шаблон Flask с подключенным Bootstrap.</p>
     </div>
+<form action="/add_url" method="post">
+    <label for="url">Введите URL:</label>
+    <input type="text" id="url" name="url" required maxlength="255">
+    <button type="submit">Добавить</button>
+</form>
 </body>
 </html>
