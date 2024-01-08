@@ -13,7 +13,12 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 def connect_db():
     return psycopg2.connect(DATABASE_URL)
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
 @app.route('/urls', methods=['GET', 'POST'])
 def handle_urls():
     if request.method == 'GET':
