@@ -10,43 +10,42 @@ app.secret_key = 'supersecretkey'
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def connect_db():
+    return psycopg2.connect(DATABASE_URL)
 
-@app.route('/urls', methods=['POST'])
-def add_url():
-    url = request.form['url']
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/urls', methods=['GET', 'POST'])
+def handle_urls():
+    if request.method == 'GET':
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM urls ORDER BY id DESC")
+        urls = cur.fetchall()
+        conn.close()
+        return render_template('urls.html', urls=urls)
+    elif request.method == 'POST':
+        url = request.form['url']
 
-    if len(url) > 255:
-        flash('URL не должен превышать 255 символов', 'error')
-        return redirect(url_for('index'))
+        if len(url) > 255:
+            flash('URL не должен превышать 255 символов', 'error')
+            return redirect(url_for('handle_urls'))
 
-    if not validate_url(url):
-        flash('Введенный URL недействителен', 'error')
-        return redirect(url_for('index'))
+        if not validate_url(url):
+            flash('Введенный URL недействителен', 'error')
+            return redirect(url_for('handle_urls'))
 
-    conn = psycopg2.connect(DATABASE_URL)
-    cur = conn.cursor()
-    cur.execute("INSERT INTO urls (name) VALUES (%s)", (url,))
-    conn.commit()
-    conn.close()
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO urls (name) VALUES (%s)", (url,))
+        conn.commit()
+        conn.close()
 
-    flash('URL успешно добавлен', 'success')
-    return redirect(url_for('index'))
-
-@app.route('/urls')
-def show_urls():
-    conn = psycopg2.connect(DATABASE_URL)
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM urls ORDER BY id DESC")
-    urls = cur.fetchall()
-    conn.close()
-    return render_template('urls.html', urls=urls)
+        flash('URL успешно добавлен', 'success')
+        return redirect(url_for('handle_urls'))
 
 @app.route('/urls/<int:url_id>')
 def show_url(url_id):
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = connect_db()
     cur = conn.cursor()
     cur.execute("SELECT * FROM urls WHERE id = %s", (url_id,))
     url = cur.fetchone()
