@@ -5,5 +5,5 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def main():
+def index():
     return "<p>Hello, World!</p>"
