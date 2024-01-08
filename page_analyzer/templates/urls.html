@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список URL</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Список URL</h1>
+        <table class="table" data-test="urls">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in urls %}
+                    <tr data-test="url">
+                        <td>{{ url[0] }}</td>
+                        <td><a href="{{ url_for('show_url', url_id=url[0]) }}">{{ url[1] }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
