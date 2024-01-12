@@ -1,5 +1,6 @@
+import requests
 import os
-from datetime import datetime
+from dotenv import load_dotenv
 from flask import (
     Flask,
     render_template,
@@ -9,8 +10,7 @@ from flask import (
     flash,
     get_flashed_messages,
 )
-import requests
-from dotenv import load_dotenv
+from datetime import datetime
 from page_analyzer.validator import (
     check_validity,
     get_check_url,
@@ -26,6 +26,7 @@ from page_analyzer.database import (
     get_checks_url_by_id,
     get_last_check_url
 )
+
 
 app = Flask(__name__)
 load_dotenv()
@@ -43,7 +44,6 @@ def add_url():
     url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     normalize_url = get_normalized_url(url_fields_dct['url'])
     errors = check_validity(normalize_url)
-
     if errors:
         if errors['name'] == 'Страница уже существует':
             url_record = get_url_by_name(normalize_url)
@@ -52,11 +52,14 @@ def add_url():
             return redirect(url_for('get_one_url', id=id))
         else:
             flash(errors['name'], 'alert-danger')
-            if 'name1' in errors:
+            if 'name1' in errors.keys():
                 flash(errors["name1"], 'alert-danger')
-
             errors = get_flashed_messages(with_categories=True)
-            return render_template('index.html', url=url_fields_dct['url'], errors=errors), 422
+            return render_template(
+                'index.html',
+                url=url_fields_dct['url'],
+                errors=errors
+            ), 422
     else:
         url_fields_dct['url'] = normalize_url
         add_url_record(url_fields_dct)
@@ -78,7 +81,10 @@ def get_one_url(id):
     url = get_url_by_id(id)
     checks = get_checks_url_by_id(id)
     messages = get_flashed_messages(with_categories=True)
-    return render_template('url.html', url=url, messages=messages, checks=checks)
+    return render_template('url.html',
+                           url=url,
+                           messages=messages, checks=checks
+                           )
 
 
 @app.post('/urls/<id>/checks')
@@ -98,13 +104,13 @@ def add_check(id):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('error.html', message='Страница не найдена!'), 404
+    return render_template('error.html',
+                           message='Страница не найдена!'
+                           ), 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('error.html', message='Внутренняя проблема сервера.'), 500
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template('error.html',
+                           message='Внутренняя проблема сервера.'
+                           ), 500
