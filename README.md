@@ -5,7 +5,7 @@
 
 # Page Analyzer
 
-The Page Analyzer is a website that analyzes the specified pages for SEO suitability. In case the site is available, we get its:
+The Page Analyzer is a web application designed to assess the SEO suitability of specified web pages. When the website is accessible, the application retrieves the following information:
 
     response code
     <h1> tag;
