@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %} 
+{% block content %} 
+<main class="flex-grow-1">
+  <div class="container-lg mt-3">
+    <h2>{{ message }}</h2>
+    <p>Приносим извинения за причиненные неудобства.</p>
+    <a href="{{ url_for('index') }}">Перейти на главную страницу</a>
+  </div>
+</main>
+{% endblock %} 

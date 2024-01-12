@@ -1,67 +1,109 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-import psycopg2
 import os
+from datetime import datetime
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    get_flashed_messages,
+)
+import requests
 from dotenv import load_dotenv
-from validators import url as validate_url
+from page_analyzer.validator import (
+    check_validity,
+    get_check_url,
+    get_http_response,
+    get_normalized_url
+)
+from page_analyzer.database import (
+    add_url_record,
+    add_check_record,
+    get_url_by_name,
+    get_all_url_records,
+    get_url_by_id,
+    get_checks_url_by_id,
+    get_last_check_url
+)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
-
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL')
-
-def connect_db():
-    return psycopg2.connect(DATABASE_URL)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
-@app.route('/')
+@app.get('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/urls', methods=['GET', 'POST'])
-def handle_urls():
-    if request.method == 'GET':
-        conn = connect_db()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM urls ORDER BY id DESC")
-        urls = cur.fetchall()
-        conn.close()
-        return render_template('urls.html', urls=urls)
-    elif request.method == 'POST':
-        url = request.form['url']
+@app.post('/urls')
+def add_url():
+    url_fields_dct = request.form.to_dict()
+    url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    normalize_url = get_normalized_url(url_fields_dct['url'])
+    errors = check_validity(normalize_url)
 
-        if len(url) > 255:
-            flash('URL не должен превышать 255 символов', 'error')
-            return redirect(url_for('handle_urls'))
+    if errors:
+        if errors['name'] == 'Страница уже существует':
+            url_record = get_url_by_name(normalize_url)
+            id = url_record['id']
+            flash(errors['name'], 'alert-primary')
+            return redirect(url_for('get_one_url', id=id))
+        else:
+            flash(errors['name'], 'alert-danger')
+            if 'name1' in errors:
+                flash(errors["name1"], 'alert-danger')
 
-        if not validate_url(url):
-            flash('Введенный URL недействителен', 'error')
-            return redirect(url_for('handle_urls'))
-
-        conn = connect_db()
-        cur = conn.cursor()
-        cur.execute("INSERT INTO urls (name) VALUES (%s)", (url,))
-        conn.commit()
-        conn.close()
-
-        flash('URL успешно добавлен', 'success')
-        return redirect(url_for('handle_urls'))
+            errors = get_flashed_messages(with_categories=True)
+            return render_template('index.html', url=url_fields_dct['url'], errors=errors), 422
+    else:
+        url_fields_dct['url'] = normalize_url
+        add_url_record(url_fields_dct)
+        flash('Страница успешно добавлена', 'alert-success')
+        url_record = get_url_by_name(normalize_url)
+        id = url_record['id']
+        return redirect(url_for('get_one_url', id=id))
 
 
-@app.route('/urls/<int:url_id>')
-def show_url(url_id):
-    conn = connect_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM urls WHERE id = %s", (url_id,))
-    url = cur.fetchone()
+@app.get('/urls')
+def get_all_urls():
+    all_urls = get_all_url_records()
+    last_check = get_last_check_url()
+    return render_template('urls.html', urls=all_urls, last_check=last_check)
 
-    cur.execute("SELECT * FROM checks WHERE url_id = %s ORDER BY id DESC", (url_id,))
-    checks = cur.fetchall()
 
-    conn.close()
+@app.get('/urls/<id>')
+def get_one_url(id):
+    url = get_url_by_id(id)
+    checks = get_checks_url_by_id(id)
+    messages = get_flashed_messages(with_categories=True)
+    return render_template('url.html', url=url, messages=messages, checks=checks)
 
-    return render_template('url.html', url=url, checks=checks)
+
+@app.post('/urls/<id>/checks')
+def add_check(id):
+    url_record = get_url_by_id(id)
+    url = url_record['name']
+    try:
+        http_response = get_http_response(url)
+    except requests.RequestException:
+        flash('Произошла ошибка при проверке', 'alert-danger')
+    else:
+        check_record = get_check_url(id, http_response)
+        add_check_record(check_record)
+        flash('Страница успешно проверена', 'alert-success')
+    return redirect(url_for('get_one_url', id=id))
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', message='Страница не найдена!'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html', message='Внутренняя проблема сервера.'), 500
 
 
 if __name__ == '__main__':
