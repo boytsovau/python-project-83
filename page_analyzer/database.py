@@ -14,7 +14,7 @@ def add_url_record(url_fields_dct):
         url_insert_query = 'INSERT INTO urls \
                                (name,\
                                created_at)\
-                            VALUES\
+                                VALUES\
                                 (%(url)s,\
                                 %(created_at)s)'
         curs.execute(url_insert_query, url_fields_dct)
