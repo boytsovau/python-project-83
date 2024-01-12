@@ -309,7 +309,7 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "gunicorn"
-version = "21.2.0"
+version = ">=20.1.0"
 description = "WSGI HTTP Server for UNIX"
 category = "main"
 optional = false
