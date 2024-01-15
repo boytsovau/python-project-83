@@ -13,10 +13,11 @@ def validate_url(url):
     if validators.url(url):
         if url_found:
             errors.append('Страница уже существует')
-    else:
-        errors.append('Некорректный URL')
         if not url:
             errors.append("URL обязателен")
+    else:
+        errors.append('Некорректный URL')
+
     return errors
 
 
