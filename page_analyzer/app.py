@@ -14,7 +14,6 @@ from datetime import datetime
 from page_analyzer.validator import (
     validate_url,
     get_check_url,
-    get_http_response,
     get_normalized_url
 )
 from page_analyzer.database import (
@@ -90,7 +89,8 @@ def add_check(id):
     url_record = get_url_by_id(id)
     url = url_record['name']
     try:
-        http_response = get_http_response(url)
+        http_response = requests.get(url)
+        http_response.raise_for_status()
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
     else:

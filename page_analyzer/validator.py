@@ -33,12 +33,6 @@ def get_normalized_url(url):
     return normalize_url
 
 
-def get_http_response(url):
-    http_response = requests.get(url)
-    http_response.raise_for_status()
-    return http_response
-
-
 def get_check_url(id, http_response):
     html_file = http_response.text
     code = http_response.status_code
