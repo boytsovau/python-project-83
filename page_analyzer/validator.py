@@ -6,16 +6,16 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def check_validity(url):
-    errors = {}
+def validate_url(url):
+    errors = []
     url_found = get_url_by_name(url)
     if validators.url(url):
         if url_found:
-            errors['name'] = 'Страница уже существует'
+            errors.append('Страница уже существует')
     else:
-        errors['name'] = 'Некорректный URL'
+        errors.append('Некорректный URL')
         if not url:
-            errors['name1'] = "URL обязателен"
+            errors.append("URL обязателен")
     return errors
 
 

@@ -12,7 +12,7 @@ from flask import (
 )
 from datetime import datetime
 from page_analyzer.validator import (
-    check_validity,
+    validate_url,
     get_check_url,
     get_http_response,
     get_normalized_url
@@ -43,17 +43,15 @@ def add_url():
     url_fields_dct = request.form.to_dict()
     url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     normalize_url = get_normalized_url(url_fields_dct['url'])
-    errors = check_validity(normalize_url)
+    errors = validate_url(normalize_url)
     if errors:
         if errors['name'] == 'Страница уже существует':
             url_record = get_url_by_name(normalize_url)
             id = url_record['id']
-            flash(errors['name'], 'alert-primary')
+            flash(errors, 'alert-primary')
             return redirect(url_for('get_one_url', id=id))
         else:
-            flash(errors['name'], 'alert-danger')
-            if 'name1' in errors.keys():
-                flash(errors["name1"], 'alert-danger')
+            flash(errors, 'alert-danger')
             errors = get_flashed_messages(with_categories=True)
             return render_template(
                 'index.html',
