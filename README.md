@@ -31,6 +31,7 @@ Page Analyzer is a comprehensive web application built on the Flask framework, e
 
 ## Project Deployment:
 
+
 1. **Install Dependencies:**
 
     ```bash
