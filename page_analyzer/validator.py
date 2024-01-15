@@ -1,5 +1,4 @@
 import validators
-import requests
 from page_analyzer.database import get_url_by_name
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
