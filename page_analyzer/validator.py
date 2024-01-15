@@ -8,6 +8,7 @@ from datetime import datetime
 
 def validate_url(url):
     errors = []
+
     url_found = get_url_by_name(url)
     if validators.url(url):
         if url_found:

@@ -43,21 +43,21 @@ def add_url():
     url_fields_dct = request.form.to_dict()
     url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     normalize_url = get_normalized_url(url_fields_dct['url'])
+
     errors = validate_url(normalize_url)
+
     if errors:
-        if errors['name'] == 'Страница уже существует':
-            url_record = get_url_by_name(normalize_url)
-            id = url_record['id']
-            flash(errors, 'alert-primary')
-            return redirect(url_for('get_one_url', id=id))
-        else:
-            flash(errors, 'alert-danger')
-            errors = get_flashed_messages(with_categories=True)
-            return render_template(
-                'index.html',
-                url=url_fields_dct['url'],
-                errors=errors
-            ), 422
+        for error in errors:
+            flash(error, 'alert-danger')
+
+        if 'URL обязателен' in errors:
+            flash('URL обязателен', 'alert-danger')
+
+        return render_template(
+            'index.html',
+            url=url_fields_dct['url'],
+            errors=get_flashed_messages(with_categories=True)
+        ), 422
     else:
         url_fields_dct['url'] = normalize_url
         add_url_record(url_fields_dct)
