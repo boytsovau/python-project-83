@@ -80,9 +80,9 @@ def get_one_url(id):
     messages = get_flashed_messages(with_categories=True)
     if checks in None:
         return render_template('url.html',
-                           url=url,
-                           messages=messages, checks=checks
-                           )
+                               url=url,
+                               messages=messages, checks=checks
+                               )
     return render_template('url.html',
                            url=url,
                            messages=messages, checks=checks
