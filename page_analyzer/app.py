@@ -78,11 +78,6 @@ def get_one_url(id):
     url = get_url_by_id(id)
     checks = get_checks_url_by_id(id)
     messages = get_flashed_messages(with_categories=True)
-    if checks in None:
-        return render_template('url.html',
-                               url=url,
-                               messages=messages, checks=checks
-                               )
     return render_template('url.html',
                            url=url,
                            messages=messages, checks=checks
@@ -103,7 +98,7 @@ def add_check(id):
         check_record = get_check_url(id, http_response)
         add_check_record(check_record)
         flash('Страница успешно проверена', 'alert-success')
-        return redirect(url_for('get_one_url', id=id))
+    return redirect(url_for('get_one_url', id=id))
 
 
 @app.errorhandler(404)
