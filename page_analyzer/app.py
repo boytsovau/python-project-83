@@ -119,3 +119,7 @@ def internal_error(error):
     return render_template('error.html',
                            message='Внутренняя проблема сервера.'
                            ), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
