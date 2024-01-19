@@ -60,8 +60,9 @@ def add_url():
     else:
         url_record = get_url_by_name(normalize_url)
         if url_record:
-            flash('Страница уже существует', 'alert-primary')
+            
             id = url_record['id']
+            flash('Страница уже существует', 'alert-primary')
             return redirect(url_for('get_one_url', id=id))
         else:
             url_fields_dct['url'] = normalize_url
