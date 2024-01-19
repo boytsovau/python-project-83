@@ -97,7 +97,7 @@ def add_check(id):
         check_record = get_check_url(id, http_response)
         add_check_record(check_record)
         flash('Страница успешно проверена', 'alert-success')
-    return redirect(url_for('get_one_url', id=id))
+    return url_for('get_one_url', id=id)
 
 
 @app.errorhandler(404)
