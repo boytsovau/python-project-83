@@ -47,20 +47,22 @@ def add_url():
 
     page_already_exists_error = 'Страница уже существует'
     invalid_url_error = 'Некорректный URL'
+    required_url_error = 'URL обязателен'
 
     if errors:
-        if 'URL обязателен' in errors:
-            flash('URL обязателен', 'alert-danger')
+        for error in errors:
+            if error == required_url_error:
+                flash(required_url_error, 'alert-danger')
 
-        if invalid_url_error in errors:
-            flash(invalid_url_error, 'alert-danger')
+            if error == invalid_url_error:
+                flash(invalid_url_error, 'alert-danger')
 
-        if page_already_exists_error in errors:
-            url_record = get_url_by_name(normalize_url)
-            if url_record:
-                flash(page_already_exists_error, 'alert-primary')
-                id = url_record['id']
-                return redirect(url_for('get_one_url', id=id))
+            if error == page_already_exists_error:
+                url_record = get_url_by_name(normalize_url)
+                if url_record:
+                    flash(page_already_exists_error, 'alert-primary')
+                    id = url_record['id']
+                    return redirect(url_for('get_one_url', id=id))
     else:
         url_fields_dct['url'] = normalize_url
         add_url_record(url_fields_dct)
@@ -68,13 +70,14 @@ def add_url():
         url_record = get_url_by_name(normalize_url)
         id = url_record['id']
         return redirect(url_for('get_one_url', id=id))
-    
+
     flash_messages = get_flashed_messages(with_categories=True)
     return render_template(
         'index.html',
         url=url_fields_dct['url'],
         errors=flash_messages
     ), 422
+
 
 @app.get('/urls')
 def get_all_urls():
