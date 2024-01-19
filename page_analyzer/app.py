@@ -80,8 +80,6 @@ def add_url():
     id = url_record['id']
     return redirect(url_for('get_one_url', id=id))
 
-  
-
 
 @app.get('/urls')
 def get_all_urls():
