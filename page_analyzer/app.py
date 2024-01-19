@@ -48,17 +48,15 @@ def add_url():
     page_already_exists_error = 'Страница уже существует'
 
     if errors:
-        for error in errors:
-            flash(error, 'alert-danger')
-
         if 'URL обязателен' in errors:
             flash('URL обязателен', 'alert-danger')
 
         if page_already_exists_error in errors:
             url_record = get_url_by_name(normalize_url)
-            flash(page_already_exists_error, 'alert-primary')
-            id = url_record['id']
-            return redirect(url_for('get_one_url', id=id))
+            if url_record:
+                flash(page_already_exists_error, 'alert-primary')
+                id = url_record['id']
+                return redirect(url_for('get_one_url', id=id))
     else:
         url_fields_dct['url'] = normalize_url
         add_url_record(url_fields_dct)
