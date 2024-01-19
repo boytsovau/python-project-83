@@ -46,10 +46,14 @@ def add_url():
     errors = validate_url(normalize_url)
 
     page_already_exists_error = 'Страница уже существует'
+    invalid_url_error = 'Некорректный URL'
 
     if errors:
         if 'URL обязателен' in errors:
             flash('URL обязателен', 'alert-danger')
+
+        if invalid_url_error in errors:
+            flash(invalid_url_error, 'alert-danger')
 
         if page_already_exists_error in errors:
             url_record = get_url_by_name(normalize_url)
