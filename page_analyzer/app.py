@@ -49,22 +49,20 @@ def add_url():
     invalid_url_error = 'Некорректный URL'
     required_url_error = 'URL обязателен'
 
+    def render_error_template(template, flash_category):
+        flash(error, flash_category)
+        return render_template(
+            template,
+            url=url_fields_dct['url'],
+            errors=get_flashed_messages(with_categories=True)
+        ), 422
+
     for error in errors:
         if error == required_url_error:
-            flash(required_url_error, 'alert-danger')
-            return render_template(
-                'index.html',
-                url=url_fields_dct['url'],
-                errors=get_flashed_messages(with_categories=True)
-            ), 422
+            return render_error_template('index.html', 'alert-danger')
 
         if error == invalid_url_error:
-            flash(invalid_url_error, 'alert-danger')
-            return render_template(
-                'index.html',
-                url=url_fields_dct['url'],
-                errors=get_flashed_messages(with_categories=True)
-            ), 422
+            return render_error_template('index.html', 'alert-danger')
 
         if error == page_already_exists_error:
             url_record = get_url_by_name(normalize_url)
@@ -79,6 +77,7 @@ def add_url():
     url_record = get_url_by_name(normalize_url)
     id = url_record['id']
     return redirect(url_for('get_one_url', id=id))
+
 
 
 @app.get('/urls')
