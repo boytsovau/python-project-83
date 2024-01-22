@@ -32,9 +32,9 @@ def get_normalized_url(url):
 
 
 def get_check_url(id, http_response):
-    html_file = http_response.text
+    html_content = http_response.text
     code = http_response.status_code
-    soup = BeautifulSoup(html_file, 'html.parser')
+    soup = BeautifulSoup(html_content, 'html.parser')
     h1 = soup.find('h1').text.strip() if soup.find('h1') else ''
     title = soup.find('title').text.strip() if soup.find('title') else ''
     description = soup.find(attrs={"name": "description"})['content'].strip()\
