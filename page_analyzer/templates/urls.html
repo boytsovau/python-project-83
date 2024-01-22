@@ -13,12 +13,14 @@
                       <th>Код ответа</th>
                   </tr>
                   {% for url in urls %}
+                      {% for check in last_check %}
                   <tr>
                       <td>{{ url.id }}</td>
                       <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
-                      <td>{{ last_check.created_at if last_check.created_at is not none }}</td>
-                      <td>{{ last_check.status_code if last_check.status_code is not none  }}</td>
+                      <td>{{ check.created_at if check.created_at is not none }}</td>
+                      <td>{{ check.status_code if check.status_code is not none  }}</td>
                   </tr>
+                      {% endfor %}
                   {% endfor %}
                   </tbody>
               </table>
