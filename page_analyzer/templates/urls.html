@@ -13,8 +13,6 @@
                       <th>Код ответа</th>
                   </tr>
                   {% for url in urls %}
-                      {% for check in last_check %}
-                          {% if check.id == url.id %}
                   <tr>
                       <td>{{ url.id }}</td>
                       <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
