@@ -12,14 +12,14 @@ def add_url_record(url_fields_dct):
     conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor() as curs:
         url_insert_query = 'INSERT INTO urls \
-                               (name,\
-                               created_at)\
-                                VALUES\
-                                (%(url)s,\
-                                %(created_at)s)'
+                               (name, created_at) \
+                               VALUES (%(url)s, %(created_at)s) \
+                               RETURNING id'
         curs.execute(url_insert_query, url_fields_dct)
+        id = curs.fetchone()[0]
     conn.commit()
     conn.close()
+
 
 
 def add_check_record(url_fields_dct):
