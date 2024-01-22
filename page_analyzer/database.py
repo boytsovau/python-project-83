@@ -85,7 +85,7 @@ def get_checks_url_by_id(id):
     return check_dct
 
 
-def get_last_check_url():
+def urls_with_last_check_info():
     conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor(cursor_factory=DictCursor) as curs:
         check_select_query = 'SELECT\

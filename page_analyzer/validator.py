@@ -31,7 +31,7 @@ def get_normalized_url(url):
     return normalize_url
 
 
-def get_check_url(id, http_response):
+def parse_html_for_check(id, http_response):
     html_content = http_response.text
     code = http_response.status_code
     soup = BeautifulSoup(html_content, 'html.parser')

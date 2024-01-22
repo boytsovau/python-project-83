@@ -13,7 +13,7 @@ from flask import (
 from datetime import datetime
 from page_analyzer.validator import (
     validate_url,
-    get_check_url,
+    parse_html_for_check,
     get_normalized_url
 )
 from page_analyzer.database import (
@@ -23,7 +23,7 @@ from page_analyzer.database import (
     get_all_url_records,
     get_url_by_id,
     get_checks_url_by_id,
-    get_last_check_url
+    urls_with_last_check_info
 )
 
 
@@ -81,7 +81,7 @@ def add_url():
 @app.get('/urls')
 def get_all_urls():
     all_urls = get_all_url_records()
-    last_check = get_last_check_url()
+    last_check = urls_with_last_check_info()
     return render_template('urls.html', urls=all_urls, last_check=last_check)
 
 
@@ -103,7 +103,7 @@ def add_check(id):
     try:
         http_response = requests.get(url)
         http_response.raise_for_status()
-        check_record = get_check_url(id, http_response)
+        check_record = parse_html_for_check(id, http_response)
         add_check_record(check_record)
         flash('Страница успешно проверена', 'alert-success')
     except requests.RequestException:
