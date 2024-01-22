@@ -103,13 +103,11 @@ def add_check(id):
     try:
         http_response = requests.get(url)
         http_response.raise_for_status()
-    except requests.RequestException:
-        flash('Произошла ошибка при проверке', 'alert-danger')
-        return redirect(url_for('get_one_url', id=id))
-    else:
         check_record = get_check_url(id, http_response)
         add_check_record(check_record)
         flash('Страница успешно проверена', 'alert-success')
+    except requests.RequestException:
+        flash('Произошла ошибка при проверке', 'alert-danger')
     return redirect(url_for('get_one_url', id=id))
 
 
