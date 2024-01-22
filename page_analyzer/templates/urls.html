@@ -5,20 +5,23 @@
           <h1>Сайты</h1>
           <div class="table-responsive">
               <table class="table table-bordered table-hover table-nowrap" data-test="urls">
-                  <tr>
-                      <th>ID</th>
-                      <th>Имя</th>
-                      <th>Последняя проверка</th>
-                      <th>Код ответа</th>
-                  </tr>
+                  <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Имя</th>
+                          <th>Последняя проверка</th>
+                          <th>Код ответа</th>
+                      </tr>
+                  </thead>
                   <tbody>
                   {% for url in urls %}
-                  <tr>
-                      <td>{{ url.id }}</td>
-                      <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
-                      <td>{{ check.created_at if check.created_at is not none }}</td>
-                      <td>{{ check.status_code if check.status_code is not none  }}</td>
-                  </tr>
+                      <tr>
+                          <td>{{ url.id }}</td>
+                          <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
+                          <td>{{ url.last_check.created_at if url.last_check is not none else '' }}</td>
+                          <td>{{ url.last_check.status_code if url.last_check is not none else '' }}</td>
+                      </tr>
+                  {% endfor %}
                   </tbody>
               </table>
           </div>
