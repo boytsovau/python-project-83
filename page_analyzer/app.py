@@ -78,7 +78,6 @@ def add_url():
     return redirect(url_for('get_one_url', id=id))
 
 
-
 @app.get('/urls')
 def get_all_urls():
     all_urls = get_all_url_records()
