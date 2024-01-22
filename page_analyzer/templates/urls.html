@@ -18,8 +18,8 @@
                       <tr>
                           <td>{{ url.id }}</td>
                           <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
-                          <td>{{ url.last_check.created_at if url.last_check is not none else '' }}</td>
-                          <td>{{ url.last_check.status_code if url.last_check is not none else '' }}</td>
+                          <td>{{ url.last_check.created_at if url.last_check is not none }}</td>
+                          <td>{{ url.last_check.status_code if url.last_check is not none }}</td>
                       </tr>
                   {% endfor %}
                   </tbody>
