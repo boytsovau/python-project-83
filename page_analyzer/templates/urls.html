@@ -5,13 +5,13 @@
           <h1>Сайты</h1>
           <div class="table-responsive">
               <table class="table table-bordered table-hover table-nowrap" data-test="urls">
-                  <tbody>
                   <tr>
                       <th>ID</th>
                       <th>Имя</th>
                       <th>Последняя проверка</th>
                       <th>Код ответа</th>
                   </tr>
+                  <tbody>
                   {% for url in urls %}
                   <tr>
                       <td>{{ url.id }}</td>
