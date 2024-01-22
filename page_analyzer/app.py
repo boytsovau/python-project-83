@@ -89,11 +89,7 @@ def get_all_urls():
 def get_one_url(id):
     url = get_url_by_id(id)
     checks = get_checks_url_by_id(id)
-    messages = get_flashed_messages(with_categories=True)
-    return render_template('url.html',
-                           url=url,
-                           messages=messages, checks=checks
-                           )
+    return render_template('url.html', url=url, checks=checks)
 
 
 @app.post('/urls/<id>/checks')
