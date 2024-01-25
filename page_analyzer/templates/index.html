@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
   {% if errors %}
-      {% for category, error in errors %}
-          <div class="alert {{ category }}" role="alert">{{ error }}</div>
-      {% endfor %}
+    <ul class=flashes>
+      <li>{{ errors }}</li>
+    </ul>
   {% endif %}
   <main class="flex-grow-1">
       <div class="container-lg mt-3">
