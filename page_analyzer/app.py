@@ -92,17 +92,3 @@ def add_check(id):
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
     return redirect(url_for('get_one_url', id=id))
-
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('error.html',
-                           message='Страница не найдена!'
-                           ), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('error.html',
-                           message='Внутренняя проблема сервера.'
-                           ), 500
