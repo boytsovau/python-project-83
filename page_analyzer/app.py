@@ -49,18 +49,17 @@ def add_url():
 
     if errors:
         for error in errors:
+            url_record = get_url_by_name(normalize_url)
+            if error == page_already_exists_error:
+                flash(error, 'alert-primary')
+                id = url_record['id']
+                return redirect(url_for('get_one_url', id=id))
             flash(error, 'alert-danger')
         return render_template(
             'index.html',
             url=url_fields_dct['url'],
             errors=get_flashed_messages(with_categories=True)
         ), 422
-
-    url_record = get_url_by_name(normalize_url)
-    if url_record:
-        flash(page_already_exists_error, 'alert-primary')
-        id = url_record['id']
-        return redirect(url_for('get_one_url', id=id))
 
     url_fields_dct['url'] = normalize_url
     add_url_record(url_fields_dct)
