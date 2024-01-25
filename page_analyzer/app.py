@@ -37,7 +37,7 @@ def index():
     return render_template('index.html')
 
 
-@@app.post('/urls')
+@app.post('/urls')
 def add_url():
     url_fields_dct = request.form.to_dict()
     url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
