@@ -14,7 +14,7 @@ def get_record_by_field(table, field, value):
     with conn.cursor(cursor_factory=DictCursor) as curs:
         select_query = f'SELECT * FROM {table} WHERE {field} = %s'
         curs.execute(select_query, (value,))
-        record = curs.fetchall()
+        record = curs.fetchone()
     conn.close()
     return record
 
