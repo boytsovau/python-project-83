@@ -1,6 +1,7 @@
 import os
 import psycopg2
 from psycopg2.extras import DictCursor
+from psycopg2 import sql
 from dotenv import load_dotenv
 
 
@@ -21,23 +22,16 @@ def add_url_record(url_fields_dct):
 
 
 def add_check_record(url_fields_dct):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor() as curs:
-        check_insert_query = 'INSERT INTO url_checks\
-                                  (url_id,\
-                                  status_code,\
-                                  h1, title,\
-                                  description,\
-                                  created_at)\
-                             VALUES\
-                                 (%(url_id)s,\
-                                 %(status_code)s,\
-                                 %(h1)s, %(title)s,\
-                                 %(description)s,\
-                                 %(created_at)s)'
-        curs.execute(check_insert_query, url_fields_dct)
-    conn.commit()
-    conn.close()
+    with psycopg2.connect(DATABASE_URL) as conn:
+        insert_query = sql.SQL("""
+            INSERT INTO url_checks
+            (url_id, status_code, h1, title, description, created_at)
+            VALUES
+            (%(url_id)s, %(status_code)s, %(h1)s, %(title)s, %(description)s, \
+            %(created_at)s)
+        """)
+        with conn.cursor() as curs:
+            curs.execute(insert_query, url_fields_dct)
 
 
 def get_url_by_name(name):

@@ -13,7 +13,7 @@ from flask import (
 from datetime import datetime
 from page_analyzer.validator import (
     validate_url,
-    parse_html_for_check,
+    collect_page_data,
     get_normalized_url
 )
 from page_analyzer.database import (
@@ -46,29 +46,21 @@ def add_url():
     errors = validate_url(normalize_url)
 
     page_already_exists_error = 'Страница уже существует'
-    invalid_url_error = 'Некорректный URL'
-    required_url_error = 'URL обязателен'
 
-    def render_error_template():
-        flash(errors[0], 'alert-danger')
+    if errors:
+        for error in errors:
+            flash(error, 'alert-danger')
         return render_template(
             'index.html',
             url=url_fields_dct['url'],
             errors=get_flashed_messages(with_categories=True)
         ), 422
 
-    if required_url_error in errors:
-        return render_error_template()
-
-    if invalid_url_error in errors:
-        return render_error_template()
-
-    if page_already_exists_error in errors:
-        url_record = get_url_by_name(normalize_url)
-        if url_record:
-            flash(page_already_exists_error, 'alert-primary')
-            id = url_record['id']
-            return redirect(url_for('get_one_url', id=id))
+    url_record = get_url_by_name(normalize_url)
+    if url_record:
+        flash(page_already_exists_error, 'alert-primary')
+        id = url_record['id']
+        return redirect(url_for('get_one_url', id=id))
 
     url_fields_dct['url'] = normalize_url
     add_url_record(url_fields_dct)
@@ -99,7 +91,7 @@ def add_check(id):
     try:
         http_response = requests.get(url)
         http_response.raise_for_status()
-        check_record = parse_html_for_check(id, http_response)
+        check_record = collect_page_data(id, http_response)
         add_check_record(check_record)
         flash('Страница успешно проверена', 'alert-success')
     except requests.RequestException:
@@ -119,7 +111,3 @@ def internal_error(error):
     return render_template('error.html',
                            message='Внутренняя проблема сервера.'
                            ), 500
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
