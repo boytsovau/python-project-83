@@ -47,14 +47,7 @@ def add_check_record(url_fields_dct):
 
 
 def get_url_by_name(name):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        url_select_query = 'SELECT * FROM urls\
-                            where name = (%s)'
-        curs.execute(url_select_query, [name])
-        url_dct = curs.fetchone()
-    conn.close()
-    return url_dct
+    return get_record_by_field('urls', 'name', name)
 
 
 def get_url_by_id(id):
