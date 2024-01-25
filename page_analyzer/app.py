@@ -8,7 +8,6 @@ from flask import (
     redirect,
     url_for,
     flash,
-    get_flashed_messages,
 )
 from datetime import datetime
 from page_analyzer.validator import (
