@@ -8,6 +8,7 @@ from flask import (
     redirect,
     url_for,
     flash,
+    get_flashed_messages,
 )
 from datetime import datetime
 from page_analyzer.validator import (
@@ -49,7 +50,7 @@ def add_url():
         return render_template(
             'index.html',
             url=url_fields_dct['url'],
-            errors=url_validation_errors
+            errors=get_flashed_messages(with_categories=True)
         ), 422
 
     url_found = get_url_by_name(normalize_url)
@@ -91,3 +92,4 @@ def add_check(id):
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
     return redirect(url_for('get_one_url', id=id))
+

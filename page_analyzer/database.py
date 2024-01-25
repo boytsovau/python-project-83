@@ -58,16 +58,6 @@ def get_url_by_id(id):
     return url_dct
 
 
-def get_all_url_records():
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        url_select_query = 'SELECT * FROM urls'
-        curs.execute(url_select_query)
-        all_urls_dct = curs.fetchall()
-    conn.close()
-    return all_urls_dct
-
-
 def get_checks_url_by_id(id):
     conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor(cursor_factory=DictCursor) as curs:
