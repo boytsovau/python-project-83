@@ -92,4 +92,3 @@ def add_check(id):
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert-danger')
     return redirect(url_for('get_one_url', id=id))
-
