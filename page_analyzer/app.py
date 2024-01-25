@@ -8,7 +8,6 @@ from flask import (
     redirect,
     url_for,
     flash,
-    get_flashed_messages,
 )
 from datetime import datetime
 from page_analyzer.validator import (
@@ -50,7 +49,7 @@ def add_url():
         return render_template(
             'index.html',
             url=url_fields_dct['url'],
-            errors=get_flashed_messages(with_categories=True)
+            errors=url_validation_errors
         ), 422
 
     url_found = get_url_by_name(normalize_url)
