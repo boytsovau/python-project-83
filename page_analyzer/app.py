@@ -20,7 +20,6 @@ from page_analyzer.database import (
     add_url_record,
     add_check_record,
     get_url_by_name,
-    get_all_url_records,
     get_url_by_id,
     get_checks_url_by_id,
     urls_with_last_check_info
@@ -69,9 +68,8 @@ def add_url():
 
 @app.get('/urls')
 def get_all_urls():
-    all_urls = get_all_url_records()
-    last_check = urls_with_last_check_info()
-    return render_template('urls.html', urls=all_urls, last_check=last_check)
+    all_urls = urls_with_last_check_info()
+    return render_template('urls.html', urls=all_urls)
 
 
 @app.get('/urls/<id>')
