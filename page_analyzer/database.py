@@ -9,16 +9,6 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def get_record_by_field(table, field, value):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        select_query = f'SELECT * FROM {table} WHERE {field} = %s'
-        curs.execute(select_query, (value,))
-        record = curs.fetchone()
-    conn.close()
-    return record
-
-
 def add_url_record(url_fields_dct):
     conn = psycopg2.connect(DATABASE_URL)
     with conn.cursor() as curs:
@@ -47,15 +37,36 @@ def add_check_record(url_fields_dct):
 
 
 def get_url_by_name(name):
-    return get_record_by_field('urls', 'name', name)
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=DictCursor) as curs:
+        url_select_query = 'SELECT * FROM urls\
+                            where name = (%s)'
+        curs.execute(url_select_query, [name])
+        url_dct = curs.fetchone()
+    conn.close()
+    return url_dct
 
 
 def get_url_by_id(id):
-    return get_record_by_field('urls', 'id', id)
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=DictCursor) as curs:
+        url_select_query = 'SELECT * FROM urls\
+                            where id = (%s)'
+        curs.execute(url_select_query, [id])
+        url_dct = curs.fetchone()
+    conn.close()
+    return url_dct
 
 
 def get_checks_url_by_id(id):
-    return get_record_by_field('url_checks', 'url_id', id)
+    conn = psycopg2.connect(DATABASE_URL)
+    with conn.cursor(cursor_factory=DictCursor) as curs:
+        check_select_query = 'SELECT * FROM url_checks\
+                              where url_id = (%s)'
+        curs.execute(check_select_query, [id])
+        check_dct = curs.fetchall()
+    conn.close()
+    return check_dct
 
 
 def urls_with_last_check_info():
