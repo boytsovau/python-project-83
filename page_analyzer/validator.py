@@ -1,5 +1,4 @@
 import validators
-from page_analyzer.database import get_url_by_name
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -7,15 +6,10 @@ from datetime import datetime
 
 def validate_url(url):
     errors = []
-
-    url_found = get_url_by_name(url)
     if not url:
         errors.append("URL обязателен")
     elif not validators.url(url):
         errors.append('Некорректный URL')
-    elif url_found:
-        errors.append('Страница уже существует')
-
     return errors
 
 
