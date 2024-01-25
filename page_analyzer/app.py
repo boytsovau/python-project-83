@@ -62,11 +62,9 @@ def add_url():
         return redirect(url_for('get_one_url', id=id))
 
     url_fields_dct['url'] = normalize_url
-    add_url_record(url_fields_dct)
+    new_url_id = add_url_record(url_fields_dct)
     flash('Страница успешно добавлена', 'alert-success')
-    url_record = get_url_by_name(normalize_url)
-    id = url_record['id']
-    return redirect(url_for('get_one_url', id=id))
+    return redirect(url_for('get_one_url', id=new_url_id))
 
 
 @app.get('/urls')
