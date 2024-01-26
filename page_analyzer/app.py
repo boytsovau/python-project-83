@@ -1,6 +1,8 @@
 import requests
 import os
+from datetime import datetime
 from dotenv import load_dotenv
+from page_analyzer.validator import validate_url
 from flask import (
     Flask,
     render_template,
@@ -9,9 +11,7 @@ from flask import (
     url_for,
     flash,
 )
-from datetime import datetime
-from page_analyzer.validator import (
-    validate_url,
+from page_analyzer.utils import (
     collect_page_data,
     get_normalized_url
 )
