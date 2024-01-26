@@ -37,26 +37,33 @@ Page Analyzer is a comprehensive web application built on the Flask framework, e
     ```bash
     make install
     ```
-3. **Create a Database:**
+2. **Create a Database:**
+
  
-    Create a PostgreSQL database and specify the corresponding parameters in the .env file. Here is an example of the contents of the .env file:
+    Create a PostgreSQL database and specify the corresponding parameters in the .env file. Here is an example of the contents of the .env.sample file:
 
     
         DATABASE_URL=postgresql://your_username:your_password@localhost:5432/your_database
         SECRET_KEY=your_secret_key
+
+    Use the command:
+
+    ```bash
+    cp .env.sample .env
+    ```
     
 
     Replace `your_username`, `your_password`, `localhost`, `5432`, `your_database`, and `your_secret_key` with your actual values.
 
 
 
-4. **Run the Application (Development Mode):**
+3. **Run the Application (Development Mode):**
 
     ```bash
     make dev
     ```
 
-5. **Run the Application (Production Mode):**
+4. **Run the Application (Production Mode):**
 
     ```bash
     make start
@@ -64,7 +71,7 @@ Page Analyzer is a comprehensive web application built on the Flask framework, e
 
     By default, the application will be available at `http://localhost:8000`. You can customize the port using the `PORT` variable.
 
-6. **Build the Project:**
+5. **Build the Project:**
 
     ```bash
     make build
