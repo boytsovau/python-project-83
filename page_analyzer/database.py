@@ -10,16 +10,14 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 def add_url_record(url_fields_dct):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor() as curs:
-        url_insert_query = 'INSERT INTO urls \
-                               (name, created_at) \
-                               VALUES (%(url)s, %(created_at)s) \
-                               RETURNING id'
-        curs.execute(url_insert_query, url_fields_dct)
-        new_url_id = curs.fetchone()[0]
-    conn.commit()
-    conn.close()
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor() as curs:
+            url_insert_query = 'INSERT INTO urls \
+                                (name, created_at) \
+                                VALUES (%(url)s, %(created_at)s) \
+                                RETURNING id'
+            curs.execute(url_insert_query, url_fields_dct)
+            new_url_id = curs.fetchone()[0]
     return new_url_id
 
 
@@ -37,42 +35,36 @@ def add_check_record(url_fields_dct):
 
 
 def get_url_by_name(name):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        url_select_query = 'SELECT * FROM urls\
-                            where name = (%s)'
-        curs.execute(url_select_query, [name])
-        url_dct = curs.fetchone()
-    conn.close()
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=DictCursor) as curs:
+            url_select_query = 'SELECT * FROM urls WHERE name = (%s)'
+            curs.execute(url_select_query, [name])
+            url_dct = curs.fetchone()
     return url_dct
 
 
 def get_url_by_id(id):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        url_select_query = 'SELECT * FROM urls\
-                            where id = (%s)'
-        curs.execute(url_select_query, [id])
-        url_dct = curs.fetchone()
-    conn.close()
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=DictCursor) as curs:
+            url_select_query = 'SELECT * FROM urls WHERE id = (%s)'
+            curs.execute(url_select_query, [id])
+            url_dct = curs.fetchone()
     return url_dct
 
 
 def get_checks_url_by_id(id):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        check_select_query = 'SELECT * FROM url_checks\
-                              where url_id = (%s)'
-        curs.execute(check_select_query, [id])
-        check_dct = curs.fetchall()
-    conn.close()
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=DictCursor) as curs:
+            check_select_query = 'SELECT * FROM url_checks WHERE url_id = (%s)'
+            curs.execute(check_select_query, [id])
+            check_dct = curs.fetchall()
     return check_dct
 
 
 def urls_with_last_check_info():
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor(cursor_factory=DictCursor) as curs:
-        check_select_query = 'SELECT\
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=DictCursor) as curs:
+            check_select_query = 'SELECT\
                                   urls.id,\
                                   urls.name,\
                                   url_checks.status_code,\
@@ -83,7 +75,6 @@ def urls_with_last_check_info():
                                                   FROM url_checks\
                                                   WHERE url_id = urls.id)\
                              ORDER BY url_checks.created_at DESC'
-        curs.execute(check_select_query)
-        check_dct = curs.fetchall()
-    conn.close()
+            curs.execute(check_select_query)
+            check_dct = curs.fetchall()
     return check_dct
