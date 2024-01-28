@@ -1,6 +1,5 @@
 import requests
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 from page_analyzer.validator import validate_url
 from flask import (
@@ -62,7 +61,6 @@ def add_url():
     new_url_id = add_url_record(url_fields_dct)
     flash('Страница успешно добавлена', 'alert-success')
     return redirect(url_for('get_one_url', id=new_url_id))
-
 
 
 @app.get('/urls')

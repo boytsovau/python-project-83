@@ -1,6 +1,5 @@
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 
 def get_normalized_url(url):
@@ -28,6 +27,5 @@ def collect_page_data(id, http_response):
                     'h1': header_title,
                     'title': title,
                     'description': description,
-                    'created_at': datetime.now().strftime("%Y-%m-%d")
                     }
     return check_record
