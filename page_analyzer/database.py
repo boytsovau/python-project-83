@@ -18,7 +18,7 @@ def add_url_record(url_fields_dct):
                                 RETURNING id'
             curs.execute(url_insert_query, url_fields_dct)
             new_url_id = curs.fetchone()[0]
-    return new_url_id
+        return new_url_id
 
 
 def add_check_record(url_fields_dct):
@@ -40,7 +40,7 @@ def get_url_by_name(name):
             url_select_query = 'SELECT * FROM urls WHERE name = (%s)'
             curs.execute(url_select_query, [name])
             url_dct = curs.fetchone()
-    return url_dct
+        return url_dct
 
 
 def get_url_by_id(id):
@@ -49,7 +49,7 @@ def get_url_by_id(id):
             url_select_query = 'SELECT * FROM urls WHERE id = (%s)'
             curs.execute(url_select_query, [id])
             url_dct = curs.fetchone()
-    return url_dct
+        return url_dct
 
 
 def get_checks_url_by_id(id):
@@ -58,7 +58,7 @@ def get_checks_url_by_id(id):
             check_select_query = 'SELECT * FROM url_checks WHERE url_id = (%s)'
             curs.execute(check_select_query, [id])
             check_dct = curs.fetchall()
-    return check_dct
+        return check_dct
 
 
 def urls_with_last_check_info():
@@ -77,4 +77,4 @@ def urls_with_last_check_info():
                              ORDER BY url_checks.created_at DESC'
             curs.execute(check_select_query)
             check_dct = curs.fetchall()
-    return check_dct
+        return check_dct
