@@ -38,10 +38,7 @@ def index():
 @app.post('/urls')
 def add_url():
     url_fields_dct = request.form.to_dict()
-    url_fields_dct['created_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    normalize_url = get_normalized_url(url_fields_dct['url'])
-
-    url_validation_errors = validate_url(normalize_url)
+    url_validation_errors = validate_url(url_fields_dct['url'])
 
     if url_validation_errors:
         for error in url_validation_errors:
@@ -51,6 +48,8 @@ def add_url():
             url=url_fields_dct['url'],
             errors=url_validation_errors
         ), 422
+
+    normalize_url = get_normalized_url(url_fields_dct['url'])
 
     url_found = get_url_by_name(normalize_url)
     page_already_exists_error = 'Страница уже существует'
@@ -63,6 +62,7 @@ def add_url():
     new_url_id = add_url_record(url_fields_dct)
     flash('Страница успешно добавлена', 'alert-success')
     return redirect(url_for('get_one_url', id=new_url_id))
+
 
 
 @app.get('/urls')
